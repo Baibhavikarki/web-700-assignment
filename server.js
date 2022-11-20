@@ -6,15 +6,21 @@
 *  Name:Baibhavi Karki Student ID: 120544226 Date: Nov 04, 2022 
 * ********************************************************************************/  
 
-var HTTP_PORT = process.env.PORT || 8080;
+var HTTP_PORT = process.env.PORT || 8082;
 var express = require("express");
 var app = express();
 const path = require("path");
+const exphbs = require("express-handlebars");
 const collegeData = require("./modules/collegeData");
 
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 
+app.engine(".hbs", exphbs.engine({
+    extname: ".hbs"
+}));
+  
+app.set("view engine", ".hbs");
 // setup a 'route' to listen on the default url path
 app.get("/", (req, res) => {
  res.sendFile(path.join(__dirname, "./views/home.html"));
