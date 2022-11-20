@@ -59,15 +59,25 @@ app.get("/htmlDemo", (req, res) => {
     //res.sendFile(path.join(__dirname, "./views/htmlDemo.html"));
     res.render("htmlDemo");
 });
-
 app.get("/students", (req, res) => {
-    collegeData.getAllStudents().then((x) => {
-        // res.send(x);
-        res.render("students", { students: x });
-    }).catch(error => {
-        res.render("students", { message: "no results" });
-    })
+
+    if (req.query.course) {
+        collegeData.getStudentsByCourse(req.query.course).then(data => {
+            res.render("students", { students: data });
+
+        }).catch(err => {
+
+            res.json({ message: "no results" });
+        })
+    } else {
+        collegeData.getAllStudents().then(data => {
+            res.render("students", { students: data });
+        }).catch(err => {
+            res.senc({ message: "no results" });
+        });
+    }
 });
+
 
 app.get("/student/:num", (req, res) => {
 
@@ -79,15 +89,7 @@ app.get("/student/:num", (req, res) => {
         res.json({ message: "no results" });
     });
 });
-// app.get("/tas", (req, res) => {
-//     collegeData.getTAs().then((x) => {
-//         res.send(x);
-//     }).catch(error => {
-//         res.send({
-//             message: error
-//         })
-//     })
-// });
+
 app.get("/course/:id", (req, res) => {
 
     collegeData.getCourses(req.params.id).then(data => {
@@ -99,22 +101,19 @@ app.get("/course/:id", (req, res) => {
 });
 
 
-// app.get("/courses", (req, res) => {
-//     collegeData.getCourses().then((x) => {
-//         res.send(x);
-//     }).catch(error => {
-//         res.send({
-//             message: error
-//         })
-//     })
-// });
-
-
+app.get("/courses", (req, res) => {
+    collegeData.getCourses().then((x) => {
+        res.render("courses", { courses: x });
+    }).catch(error => {
+        res.render("courses", { message: "no results" });
+    })
+});
 
 app.get("/students/add", (req, res) => {
     //res.sendFile(path.join(__dirname, "./views/addStudent.html"));
     res.render("addStudent");
 });
+
 
 app.post("/students/add", (req, res) => {
     const addStudent = {
@@ -128,14 +127,23 @@ app.post("/students/add", (req, res) => {
         "status": req.body.enrollmentStatus,
         "course": req.body.enrollementCourse
     }
-
-    collegeData.addStudent(addStudent).then(() => {
-        res.redirect('/students');
-    }).catch(error => {
-        res.send({
-            message: error
+    if (req.body.firstName && req.body.lastName && req.body.email) {
+        collegeData.addStudent(addStudent).then(() => {
+            res.redirect('/students');
+        }).catch(error => {
+            res.send({
+                message: error
+            })
         })
-    })
+    }else{
+        res.render("addStudent");
+    }
+
+});
+app.post("/students/update", (req, res) => {
+    req.body.TA = (req.body.TA) ? true : false;
+    collegeData.updateStudent(req.body);
+    res.redirect("/students");
 });
 
 app.get("/*", (req, res) => {

@@ -1,7 +1,7 @@
 class Data {
   students
   courses
-  
+
   constructor(students, courses) {
     this.students = students;
     this.courses = courses;
@@ -77,7 +77,7 @@ module.exports.getStudentsByCourse = function (course) {
         }
       }
 
-      if(courseMatch.length == 0) {
+      if (courseMatch.length == 0) {
         reject("no course match returned");
       }
       resolve(courseMatch);
@@ -99,7 +99,7 @@ module.exports.getStudentsByNum = function (num) {
         }
       }
 
-      if(studentsByNum.length == 0) {
+      if (studentsByNum.length == 0) {
         reject("no student num match returned");
       }
       resolve(studentsByNum[0]);
@@ -110,15 +110,30 @@ module.exports.getStudentsByNum = function (num) {
   })
 }
 
-module.exports.addStudent = function (addStudent) { 
-  return new Promise((resolve, reject) => { 
+module.exports.addStudent = function (addStudent) {
+  return new Promise((resolve, reject) => {
     addStudent.studentNum = dataCollection.students.length++;
-    dataCollection.students.push(addStudent); 
-    resolve(dataCollection.students); 
-}) 
+    dataCollection.students.push(addStudent);
+    resolve(dataCollection.students);
+  })
 }
 
+module.exports.updateStudent = function (studentData) {
 
+
+  return new Promise(function (resolve, reject) {
+
+    dataCollection.students.forEach((item) => {
+      if (item.studentNum == studentData.studentNum) {
+        dataCollection.students.splice(item.studentNum - 1, 1, studentData)
+      }
+    }
+    );
+    resolve("success");
+  });
+
+
+}
 
 
 
