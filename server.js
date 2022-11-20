@@ -23,15 +23,18 @@ app.engine(".hbs", exphbs.engine({
 app.set("view engine", ".hbs");
 // setup a 'route' to listen on the default url path
 app.get("/", (req, res) => {
- res.sendFile(path.join(__dirname, "./views/home.html"));
+//  res.sendFile(path.join(__dirname, "./views/home.html"));
+res.render("home");
 });
 
 app.get("/about", (req, res) => {
-    res.sendFile(path.join(__dirname, "./views/about.html"));
+   //res.sendFile(path.join(__dirname, "./views/about.html"));
+    res.render("about");
    });
 
 app.get("/htmlDemo", (req, res) => {
-    res.sendFile(path.join(__dirname, "./views/htmlDemo.html"));
+    //res.sendFile(path.join(__dirname, "./views/htmlDemo.html"));
+    res.render("htmlDemo");
    });
 
 app.get("/students", (req, res) => {
@@ -69,7 +72,8 @@ app.get("/courses", (req, res) => {
 
 
 app.get("/students/add", (req, res) => {
-    res.sendFile(path.join(__dirname, "./views/addStudent.html"));
+    //res.sendFile(path.join(__dirname, "./views/addStudent.html"));
+    res.render("addStudent");
 });
 
 app.post("/students/add", (req, res) => { 
