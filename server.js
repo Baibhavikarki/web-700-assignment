@@ -4,7 +4,7 @@
 *  of this assignment has been copied manually or electronically from any other source  
 *  (including 3rd party web sites) or distributed to other students. *  
 *  Name:Baibhavi Karki Student ID: 120544226 Date: Nov 04, 2022 
-* ********************************************************************************/  
+* ********************************************************************************/
 
 var HTTP_PORT = process.env.PORT || 8082;
 var express = require("express");
@@ -17,52 +17,75 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 
 app.engine(".hbs", exphbs.engine({
-    extname: ".hbs"
+    extname: ".hbs",
+    helpers: {
+        navLink: function (url, options) {
+            return '<li' +
+                ((url == app.locals.activeRoute) ? ' class="nav-item active" ' : ' class="nav-item" ') +
+                '><a class="nav-link" href="' + url + '">' + options.fn(this) + '</a></li>';
+        },
+        equal: function (lvalue, rvalue, options) {
+            if (arguments.length < 3)
+                throw new Error("Handlebars Helper equal needs 2 parameters");
+            if (lvalue != rvalue) {
+                return options.inverse(this);
+            } else {
+                return options.fn(this);
+            }
+        }
+    }
 }));
-  
+
 app.set("view engine", ".hbs");
+
+app.use(function (req, res, next) {
+    let route = req.path.substring(1);
+    app.locals.activeRoute = "/" + (isNaN(route.split('/')[1]) ? route.replace(/\/(?!.*)/, "") : route.replace(/\/(.*)/, ""));
+    next();
+});
+
 // setup a 'route' to listen on the default url path
 app.get("/", (req, res) => {
-//  res.sendFile(path.join(__dirname, "./views/home.html"));
-res.render("home");
+    //  res.sendFile(path.join(__dirname, "./views/home.html"));
+    res.render("home");
 });
 
 app.get("/about", (req, res) => {
-   //res.sendFile(path.join(__dirname, "./views/about.html"));
+    //res.sendFile(path.join(__dirname, "./views/about.html"));
     res.render("about");
-   });
+});
 
 app.get("/htmlDemo", (req, res) => {
     //res.sendFile(path.join(__dirname, "./views/htmlDemo.html"));
     res.render("htmlDemo");
-   });
+});
 
 app.get("/students", (req, res) => {
-    collegeData.getAllStudents().then((x) =>{
+    collegeData.getAllStudents().then((x) => {
         res.send(x);
-    }).catch(error =>{
+    }).catch(error => {
         res.send({
             message: error
         })
     })
 });
 
-app.get("/tas", (req, res) => {
-    collegeData.getTAs().then((x) =>{
-        res.send(x);
-    }).catch(error =>{
-        res.send({
-            message: error
-        })
-    })
-});
+// app.get("/tas", (req, res) => {
+//     collegeData.getTAs().then((x) => {
+//         res.send(x);
+//     }).catch(error => {
+//         res.send({
+//             message: error
+//         })
+//     })
+// });
 
 
 
 app.get("/courses", (req, res) => {
-    collegeData.getCourses().then((x) =>{
+    collegeData.getCourses().then((x) => {
         res.send(x);
-    }).catch(error =>{
+    }).catch(error => {
         res.send({
             message: error
         })
@@ -76,22 +99,22 @@ app.get("/students/add", (req, res) => {
     res.render("addStudent");
 });
 
-app.post("/students/add", (req, res) => { 
-    const addStudent =  { 
-        "firstName": req.body.firstName, 
-        "lastName":req.body.lastName, 
-        "email": req.body.email, 
-        "addressStreet": req.body.street, 
-        "addressCity": req.body.city, 
-        "addressProvince": req.body.province, 
-        "TA": req.body.collegeEmployment ? true : false, 
-        "status": req.body.enrollmentStatus, 
-        "course": req.body.enrollementCourse 
-    } 
-       
-    collegeData.addStudent(addStudent).then(() =>{
-            res.redirect('/students');
-    }).catch(error =>{
+app.post("/students/add", (req, res) => {
+    const addStudent = {
+        "firstName": req.body.firstName,
+        "lastName": req.body.lastName,
+        "email": req.body.email,
+        "addressStreet": req.body.street,
+        "addressCity": req.body.city,
+        "addressProvince": req.body.province,
+        "TA": req.body.collegeEmployment ? true : false,
+        "status": req.body.enrollmentStatus,
+        "course": req.body.enrollementCourse
+    }
+
+    collegeData.addStudent(addStudent).then(() => {
+        res.redirect('/students');
+    }).catch(error => {
         res.send({
             message: error
         })
@@ -107,11 +130,11 @@ app.get("/*", (req, res) => {
 
 // setup http server to listen on HTTP_PORT
 
-app.listen(HTTP_PORT, ()=>{
+app.listen(HTTP_PORT, () => {
     console.log("server listening on port: " + HTTP_PORT)
-    collegeData.initialize().then((x)=>{
-    }).catch(error =>{
+    collegeData.initialize().then((x) => {
+    }).catch(error => {
         console.log(error);
-    }) 
+    })
 });
 
