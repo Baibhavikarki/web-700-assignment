@@ -6,7 +6,7 @@
 *  Name:Baibhavi Karki Student ID: 120544226 Date: Nov 04, 2022 
 * ********************************************************************************/
 
-var HTTP_PORT = process.env.PORT || 8082;
+var HTTP_PORT = process.env.PORT || 8085;
 var express = require("express");
 var app = express();
 const path = require("path");
@@ -62,14 +62,23 @@ app.get("/htmlDemo", (req, res) => {
 
 app.get("/students", (req, res) => {
     collegeData.getAllStudents().then((x) => {
-        res.send(x);
+        // res.send(x);
+        res.render("students", { students: x });
     }).catch(error => {
-        res.send({
-            message: error
-        })
+        res.render("students", { message: "no results" });
     })
 });
 
+app.get("/student/:num", (req, res) => {
+
+    collegeData.getStudentsByNum(req.params.num).then(data => {
+
+        res.render("student", { student: data });
+    }).catch(err => {
+
+        res.json({ message: "no results" });
+    });
+});
 // app.get("/tas", (req, res) => {
 //     collegeData.getTAs().then((x) => {
 //         res.send(x);
@@ -79,18 +88,26 @@ app.get("/students", (req, res) => {
 //         })
 //     })
 // });
+app.get("/course/:id", (req, res) => {
 
+    collegeData.getCourses(req.params.id).then(data => {
+        res.render("course", { course: data });
+    }).catch(err => {
 
-
-app.get("/courses", (req, res) => {
-    collegeData.getCourses().then((x) => {
-        res.send(x);
-    }).catch(error => {
-        res.send({
-            message: error
-        })
-    })
+        res.json({ message: "no results" });
+    });
 });
+
+
+// app.get("/courses", (req, res) => {
+//     collegeData.getCourses().then((x) => {
+//         res.send(x);
+//     }).catch(error => {
+//         res.send({
+//             message: error
+//         })
+//     })
+// });
 
 
 

@@ -94,8 +94,6 @@ module.exports.getStudentsByNum = function (num) {
     if (dataCollection.students.length > 0) {
       var studentsByNum = [];
       for (var i = 0; i < dataCollection.students.length; i++) {
-        console.log(dataCollection.students[i].studentNum)
-        console.log(num)
         if (dataCollection.students[i].studentNum == num) {
           studentsByNum.push(dataCollection.students[i]);
         }
@@ -104,7 +102,7 @@ module.exports.getStudentsByNum = function (num) {
       if(studentsByNum.length == 0) {
         reject("no student num match returned");
       }
-      resolve(studentsByNum);
+      resolve(studentsByNum[0]);
     } else {
       reject("no results returned");
     }
