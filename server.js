@@ -93,7 +93,7 @@ app.get("/student/:num", (req, res) => {
 
 app.get("/course/:id", (req, res) => {
 
-    collegeData.getCourses(req.params.id).then(data => {
+    collegeData.getCourseById(req.params.id).then(data => {
         res.render("course", { course: data });
     }).catch(err => {
 

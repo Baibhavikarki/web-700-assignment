@@ -135,6 +135,26 @@ module.exports.updateStudent = function (studentData) {
 
 }
 
+module.exports.getCourseById = function (id) {
+  return new Promise(function (resolve, reject) {
 
+    var courseObj = new Object();
+    dataCollection.courses.forEach((item) => {
+      if (item.courseId == id) {
+        courseObj = item;
+
+
+      }
+    }
+    );
+    if (Object.entries(courseObj).length === 0) {
+
+      reject("success");
+    } else {
+      resolve(courseObj);
+    }
+
+  });
+}
 
 
