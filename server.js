@@ -154,13 +154,10 @@ app.get("/*", (req, res) => {
 
 
 
-// setup http server to listen on HTTP_PORT
-
-app.listen(HTTP_PORT, () => {
-    console.log("server listening on port: " + HTTP_PORT)
-    collegeData.initialize().then((x) => {
-    }).catch(error => {
-        console.log(error);
-    })
-});
-
+collegeData.initialize().then(() => {
+    app.listen(HTTP_PORT, () => {
+        console.log("server listening on: " + HTTP_PORT)
+    });
+}).catch(err => {
+    console.log(err);
+})
