@@ -12,9 +12,9 @@ var sequelize = new Sequelize('ckftadkq', 'ckftadkq', 'r03ikTEOpl7WCszBnA2kR-2eV
 
 var Student = sequelize.define('Student', {
   studentNum: {
-      type: Sequelize.INTEGER,
-      primaryKey: true, 
-      autoIncrement: true
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
   },
   firstName: Sequelize.STRING,
   lastName: Sequelize.STRING,
@@ -28,22 +28,22 @@ var Student = sequelize.define('Student', {
 
 var Course = sequelize.define('Course', {
   courseId: {
-      type: Sequelize.INTEGER,
-      primaryKey: true, 
-      autoIncrement: true
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
   },
   courseCode: Sequelize.STRING,
   courseDescription: Sequelize.STRING
 });
 
-Course.hasMany(Student, {foreignKey: 'course'});
+Course.hasMany(Student, { foreignKey: 'course' });
 
 
-module.exports.initialize = function(){
-  return new Promise((resolve,reject)=>{
-    sequelize.sync().then(()=>{
+module.exports.initialize = function () {
+  return new Promise((resolve, reject) => {
+    sequelize.sync().then(() => {
       resolve("connected to database")
-    }).catch(err=>{
+    }).catch(err => {
       reject(err.message);
     })
   })
@@ -51,54 +51,148 @@ module.exports.initialize = function(){
 
 module.exports.getAllStudents = function () {
   return new Promise(function (resolve, reject) {
-    reject();
+    Student.findAll().then(data => {
+      resolve(data);
+    }).catch(err => {
+      reject("no results returned", err.message);
+    });
   });
 }
 
 module.exports.getCourses = function () {
   return new Promise(function (resolve, reject) {
-    reject();
+    Course.findAll().then(data => {
+      resolve(data);
+    }).catch(err => {
+      reject("no results returned", err.message);
+    });
   });
 }
-
-module.exports.getTAs = function () {
-  return new Promise(function (resolve, reject) {
-    reject();
-  });
-}
-
 
 module.exports.getStudentsByCourse = function (course) {
   return new Promise(function (resolve, reject) {
-    reject();
+    Student.findAll(
+      {
+        where: {
+          course: course
+        }
+      }
+    ).then(data => {
+      resolve(data);
+    }).catch(err => {
+      reject("no results returned", err.message);
+    });
   });
 }
 
 
 module.exports.getStudentsByNum = function (num) {
   return new Promise(function (resolve, reject) {
-    reject();
+    Student.findAll(
+      {
+        where: {
+          studentNum: num
+        }
+      }
+    ).then(data => {
+      resolve(data);
+    }).catch(err => {
+      reject("no results returned", err.message);
+    });
   });
 }
 
 module.exports.addStudent = function (addStudent) {
   return new Promise(function (resolve, reject) {
-    reject();
+    addStudent.TA = (addStudent.TA) ? true : false;
+    Student.create(addStudent).then(newUser => {
+      resolve(newUser);
+    }).catch(err => {
+      reject("unable to create user", err.message);
+    })
+
   });
 }
 
 module.exports.updateStudent = function (studentData) {
-  return new Promise(function (resolve, reject) {
-    reject();
+  return new Promise((resolve, reject) => {
+    Student.update(studentData, {
+      where: {
+        studentNum: studentData.studentData
+      }
+    }).then(data => {
+      resolve(data);
+    }).catch(err => {
+      reject("unable to update user by id", err.message)
+    })
   });
-
-
 }
+
 
 module.exports.getCourseById = function (id) {
   return new Promise(function (resolve, reject) {
-    reject();
+    Course.findAll({
+      where: {
+        courseId: id
+      }
+    }).then(data => {
+      resolve(data);
+    }).catch(err => {
+      reject("no results returned", err.message);
+    });
   });
 }
 
 
+module.exports.addCourse = function (courseData) {
+  return new Promise(function (resolve, reject) {
+    Course.create(courseData).then(courseData => {
+      resolve(courseData);
+    }).catch(err => {
+      reject("unable to create user", err.message);
+    })
+  });
+}
+
+module.exports.updateCourse = function (idToSearchFor, newData) {
+  return new Promise((resolve, reject) => {
+    Course.update(newData, {
+      where: {
+        courseId: idToSearchFor
+      }
+    }).then(data => {
+      resolve(data);
+    }).catch(err => {
+      reject("unable to update user by id", err.message)
+    })
+  });
+}
+
+
+module.exports.deleteCourseById = function (id) {
+  return new Promise((resolve, reject) => {
+    Course.destroy({
+      where: {
+        courseId: id
+      }
+    }).then(() => {
+      resolve();
+    }).catch(err => {
+      reject("unable to delete user", err.message);
+    })
+  });
+}
+
+module.exports.deleteStudentByNum = function (studentNum) {
+  return new Promise((resolve, reject) => {
+    Student.destroy({
+      where: {
+        studentNum: studentNum
+      }
+    }).then(() => {
+      resolve();
+    }).catch(err => {
+      reject("unable to delete user", err.message);
+    })
+  });
+}
