@@ -117,41 +117,42 @@ app.get("/students/add", (req, res) => {
 
 
 app.post("/students/add", (req, res) => {
-    const addStudent = {
-        "firstName": req.body.firstName,
-        "lastName": req.body.lastName,
-        "email": req.body.email,
-        "addressStreet": req.body.street,
-        "addressCity": req.body.city,
-        "addressProvince": req.body.province,
-        "TA": req.body.collegeEmployment ? true : false,
-        "status": req.body.enrollmentStatus,
-        "course": req.body.enrollementCourse
-    }
     if (req.body.firstName && req.body.lastName && req.body.email) {
-        collegeData.addStudent(addStudent).then(() => {
+        collegeData.addStudent(req.body).then(() => {
             res.redirect('/students');
         }).catch(error => {
             res.send({
                 message: error
             })
         })
-    }else{
+    } else {
         res.render("addStudent");
     }
-
 });
+
 app.post("/students/update", (req, res) => {
     req.body.TA = (req.body.TA) ? true : false;
     collegeData.updateStudent(req.body);
     res.redirect("/students");
 });
 
+
+app.get("/student/delete/:studentNum", (req, res) => {
+    collegeData.deleteStudentByNum(req.params.studentNum).then(() => {
+        res.redirect('/students');
+    }).catch(error => {
+        res.sendStatus(500);
+        res.send({
+            message: "Unable to Remove Student / Student not found"
+        })
+    })
+});
+
+
 app.get("/*", (req, res) => {
     res.status(404);
     res.send("Page Not Found");
 });
-
 
 
 collegeData.initialize().then(() => {
