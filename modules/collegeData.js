@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-
 var sequelize = new Sequelize('ckftadkq', 'ckftadkq', 'r03ikTEOpl7WCszBnA2kR-2eVa2BDDzA', {
   host: 'heffalump.db.elephantsql.com',
   dialect: 'postgres',
@@ -38,7 +37,6 @@ var Course = sequelize.define('Course', {
 
 Course.hasMany(Student, { foreignKey: 'course' });
 
-
 module.exports.initialize = function () {
   return new Promise((resolve, reject) => {
     sequelize.sync().then(() => {
@@ -48,6 +46,7 @@ module.exports.initialize = function () {
     })
   })
 }
+
 
 module.exports.getAllStudents = function () {
   return new Promise(function (resolve, reject) {
@@ -85,10 +84,9 @@ module.exports.getStudentsByCourse = function (course) {
   });
 }
 
-
-module.exports.getStudentsByNum = function (num) {
+module.exports.getStudentByNum = function (num) {
   return new Promise(function (resolve, reject) {
-    Student.findAll(
+    Student.findOne(
       {
         where: {
           studentNum: num
@@ -102,36 +100,9 @@ module.exports.getStudentsByNum = function (num) {
   });
 }
 
-module.exports.addStudent = function (addStudent) {
-  return new Promise(function (resolve, reject) {
-    addStudent.TA = (addStudent.TA) ? true : false;
-    Student.create(addStudent).then(newUser => {
-      resolve(newUser);
-    }).catch(err => {
-      reject("unable to create user", err.message);
-    })
-
-  });
-}
-
-module.exports.updateStudent = function (studentData) {
-  return new Promise((resolve, reject) => {
-    Student.update(studentData, {
-      where: {
-        studentNum: studentData.studentData
-      }
-    }).then(data => {
-      resolve(data);
-    }).catch(err => {
-      reject("unable to update user by id", err.message)
-    })
-  });
-}
-
-
 module.exports.getCourseById = function (id) {
   return new Promise(function (resolve, reject) {
-    Course.findAll({
+    Course.findOne({
       where: {
         courseId: id
       }
@@ -140,6 +111,46 @@ module.exports.getCourseById = function (id) {
     }).catch(err => {
       reject("no results returned", err.message);
     });
+  });
+}
+
+
+module.exports.getTAs = function () {
+  return new Promise(function (resolve, reject) {
+    reject();
+  });
+}
+
+module.exports.addStudent = function (addStudent) {
+  return new Promise(function (resolve, reject) {
+    addStudent.TA = (addStudent.TA) ? true : false;
+    for (variable in addStudent) {
+      if (!addStudent[variable]) {
+        addStudent[variable] = null;
+      }
+    }
+    Student.create(addStudent, {
+      omitNull: false
+    }).then(newUser => {
+      resolve(newUser);
+    }).catch(err => {
+      reject("unable to create user", err.message);
+    })
+
+  });
+}
+
+module.exports.updateStudent = function (idToSearchFor, newData) {
+  return new Promise((resolve, reject) => {
+    Student.update(newData, {
+      where: {
+        studentNum: idToSearchFor
+      }
+    }).then(data => {
+      resolve(data);
+    }).catch(err => {
+      reject("unable to update user by id", err.message)
+    })
   });
 }
 

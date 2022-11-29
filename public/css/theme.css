@@ -32,7 +32,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-link {
-    color: #220fef;
+    color: #9794b7;
 }
 
 .nav-link :hover {
@@ -42,8 +42,8 @@ h1, h2, h3, h4, h5, h6 {
 
   
 tbody tr:nth-child(odd){
-    background-color: #4C8BF5;
-    color: #fff;
+    background-color: #dde0e6;
+    color: rgb(6, 5, 5);
 }
 
 legend {
@@ -51,20 +51,20 @@ legend {
     text-shadow: 1px 1px 1px rgb(255, 5, 47);
     color: gold;
 }
-
+/* 
 a:link {
     color: red;
   }
-  
+   */
  
   
   /* mouse over link */
-a:hover {
+/* a:hover {
     color: hotpink;
-  }
+  } */
   
   /* selected link */
-a:active {
+/* a:active {
     color: blue;
   }
 
@@ -76,4 +76,4 @@ a:active {
   }
 .btn{
     font-family: "Lucida Console", "Courier New", monospace;
-}
+} */

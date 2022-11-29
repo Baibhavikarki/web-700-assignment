@@ -3,7 +3,7 @@
 *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part  
 *  of this assignment has been copied manually or electronically from any other source  
 *  (including 3rd party web sites) or distributed to other students. *  
-*  Name:Baibhavi Karki Student ID: 120544226 Date: Nov 20, 2022 
+*  Name:Baibhavi Karki Student ID: 120544226 Date: Nov 28, 2022 
 *  Online (Cyclic) Link: https://busy-teal-binturong-vest.cyclic.app/
 * ********************************************************************************/
 
@@ -65,7 +65,7 @@ app.get("/students", (req, res) => {
     if (req.query.course) {
         collegeData.getStudentsByCourse(req.query.course).then(data => {
             // if (data.length > 0) {
-                res.render("students", { students: data });
+            res.render("students", { students: data });
             // }
         }).catch(err => {
 
@@ -74,7 +74,7 @@ app.get("/students", (req, res) => {
     } else {
         collegeData.getAllStudents().then(data => {
             // if (data.length > 0) {
-                res.render("students", { students: data });
+            res.render("students", { students: data });
             // }
         }).catch(err => {
             res.senc({ message: "no results" });
@@ -85,6 +85,8 @@ app.get("/students", (req, res) => {
 app.get("/student/:studentNum", (req, res) => {
     // initialize an empty object to store the values
     let viewData = {};
+
+
     collegeData.getStudentByNum(req.params.studentNum).then((data) => {
         if (data) {
             viewData.student = data; //store student data in the "viewData" object as "student"
@@ -93,7 +95,7 @@ app.get("/student/:studentNum", (req, res) => {
         }
     }).catch(() => {
         viewData.student = null; // set student to null if there was an error
-    }).then(data.getCourses)
+    }).then(collegeData.getCourses)
         .then((data) => {
             viewData.courses = data; // store course data in the "viewData" object as "courses"
             // loop through viewData.courses and once we have found the courseId that matches
@@ -117,7 +119,14 @@ app.get("/student/:studentNum", (req, res) => {
 
 app.get("/students/add", (req, res) => {
     //res.sendFile(path.join(__dirname, "./views/addStudent.html"));
-    res.render("addStudent");
+    collegeData.getCourses().then((x) => {
+        res.render("addStudent", {
+            courses:
+                x
+        });
+    }).catch(error => {
+        res.render("addStudent", { courses: [] });
+    })
 });
 
 app.post("/students/add", (req, res) => {
@@ -137,9 +146,13 @@ app.post("/students/add", (req, res) => {
 
 
 app.post("/students/update", (req, res) => {
-    req.body.TA = (req.body.TA) ? true : false;
-    collegeData.updateStudent(req.body);
-    res.redirect("/students");
+    collegeData.updateStudent(req.body.studentNum, req.body).then(data => {
+        res.redirect("/students");
+    }).catch(error => {
+        res.send({
+            message: error
+        })
+    })
 });
 
 app.get("/student/delete/:studentNum", (req, res) => {
@@ -155,9 +168,7 @@ app.get("/student/delete/:studentNum", (req, res) => {
 
 app.get("/courses", (req, res) => {
     collegeData.getCourses().then((x) => {
-        // if (x.length > 0) {
-            res.render("courses", { courses: x });
-        // }
+        res.render("courses", { courses: x });
     }).catch(error => {
         res.render("courses", { message: "no results" });
     })
@@ -166,8 +177,8 @@ app.get("/courses", (req, res) => {
 app.get("/course/:id", (req, res) => {
     collegeData.getCourseById(req.params.id).then(data => {
         res.render("course", { course: data });
-    }).catch(err => {
-        res.json({ message: "no results", e });
+    }).catch(error => {
+        res.json({ message: "no results" });
     });
 });
 
@@ -186,7 +197,7 @@ app.post("/courses/add", (req, res) => {
 });
 
 app.post("/course/update", (req, res) => {
-    collegeData.updateCourse(req.body.id, req.body).then(data => {
+    collegeData.updateCourse(req.body.courseId, req.body).then(data => {
         res.redirect('/courses');
     }).catch(error => {
         res.send({
