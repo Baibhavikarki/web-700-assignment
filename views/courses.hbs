@@ -3,11 +3,9 @@
         <div class="col-md-12 text-center">
             <strong>{{message}}</strong>
         </div>
-
         <br>
-        <h2>Courses</h2>
-        <hr />
-        <a href="/courses/add" class="btn btn-success float-right">Add New Course</a>
+        <h2>Courses    <a href="/courses/add" class="btn btn-success float-right">Add New Course</a> </h2>
+        <hr /> 
         <table class="table table-dark ">
             <thead>
                 <tr>
@@ -24,7 +22,6 @@
                     <td> <a href="/course/delete/{{this.courseId}}" class="btn btn-danger">Delete Course</a></td>
                 </tr>
                 {{/each}}
-
             </tbody>
         </table>
 
