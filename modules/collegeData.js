@@ -140,9 +140,15 @@ module.exports.addStudent = function (addStudent) {
   });
 }
 
-module.exports.updateStudent = function (idToSearchFor, newData) {
+module.exports.updateStudent = function (idToSearchFor, studentData) {
   return new Promise((resolve, reject) => {
-    Student.update(newData, {
+    studentData.TA = (studentData.TA) ? true : false;
+      for( attribute in studentData){
+          if(studentData[attribute] === ""){
+              studentData[attribute]=null;
+          }
+      }
+    Student.update(studentData, {
       where: {
         studentNum: idToSearchFor
       }

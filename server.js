@@ -1,9 +1,9 @@
 /********************************************************************************* 
-* WEB700 – Assignment 05
+* WEB700 – Assignment 06
 *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part  
 *  of this assignment has been copied manually or electronically from any other source  
 *  (including 3rd party web sites) or distributed to other students. *  
-*  Name:Baibhavi Karki Student ID: 120544226 Date: Nov 28, 2022 
+*  Name:Baibhavi Karki Student ID: 120544226 Date: Dec 2, 2022 
 *  Online (Cyclic) Link: https://busy-teal-binturong-vest.cyclic.app/
 * ********************************************************************************/
 
@@ -154,6 +154,7 @@ app.post("/students/update", (req, res) => {
         })
     })
 });
+
 
 app.get("/student/delete/:studentNum", (req, res) => {
     collegeData.deleteStudentByNum(req.params.studentNum).then(() => {
